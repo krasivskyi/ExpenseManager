@@ -1,0 +1,35 @@
+     # Build results
+     [Bb]in/
+     [Oo]bj/
+
+     # User-specific files
+     *.user
+     *.suo
+     *.userosscache
+     *.sln.docstates
+
+     # Visual Studio 2019
+     .vs/
+
+     # Auto-generated files
+     *.generated.cs
+
+     # Backup & report files
+     *.bak
+     *.pdb
+     *.log
+     *.vspscc
+     *.vssscc
+
+     # Resharper
+     _ReSharper*/
+     *.DotSettings.user
+
+     # DotNet
+     .dotnet/
+
+     # ASP.NET Scaffolding
+     ScaffoldingReadMe.txt
+
+     # Configuration files
+     appsettings.json
