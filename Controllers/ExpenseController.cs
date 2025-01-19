@@ -18,14 +18,34 @@ namespace ExpenseManager.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Expense>>> GetExpenses()
+        public async Task<ActionResult<IEnumerable<Expense>>> GetExpenses([FromQuery] ExpenseFilterDto filter)
         {
             try
             {
-                var expenses = await _context.Expenses
+                var query = _context.Expenses
                     .Include(e => e.Category)
-                    .ToListAsync();
+                    .AsQueryable();
 
+                if (filter.StartDate.HasValue)
+                    query = query.Where(e => e.Date >= filter.StartDate.Value);
+                    
+                if (filter.EndDate.HasValue)
+                    query = query.Where(e => e.Date <= filter.EndDate.Value);
+
+                if (filter.CategoryId.HasValue)
+                    query = query.Where(e => e.CategoryId == filter.CategoryId.Value);
+
+                if (!string.IsNullOrWhiteSpace(filter.SearchTerm))
+                    query = query.Where(e => e.Title.Contains(filter.SearchTerm) 
+                        || (e.Description != null && e.Description.Contains(filter.SearchTerm)));
+
+                if (filter.MinAmount.HasValue)
+                    query = query.Where(e => e.Amount >= filter.MinAmount.Value);
+                    
+                if (filter.MaxAmount.HasValue)
+                    query = query.Where(e => e.Amount <= filter.MaxAmount.Value);
+
+                var expenses = await query.ToListAsync();
                 return Ok(expenses);
             }
             catch (Exception ex)
