@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ExpenseManager.Data;
 using ExpenseManager.Models;
+using ExpenseManager.DTOs;
 
 namespace ExpenseManager.Controllers
 {
@@ -70,7 +71,6 @@ namespace ExpenseManager.Controllers
             }
         }
 
-        // GET: api/expense/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<Expense>> GetExpense(int id)
         {
@@ -93,7 +93,6 @@ namespace ExpenseManager.Controllers
             }
         }
 
-        // DELETE: api/expense/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteExpense(int id)
         {
@@ -110,6 +109,39 @@ namespace ExpenseManager.Controllers
                 await _context.SaveChangesAsync();
 
                 return Ok(new { message = $"Expense with ID {id} was deleted" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateExpense(int id, UpdateExpenseDto dto)
+        {
+            try
+            {
+                var expense = await _context.Expenses.FindAsync(id);
+                if (expense == null)
+                {
+                    return NotFound(new { message = $"Expense with ID {id} not found" });
+                }
+
+                var category = await _context.Categories
+                    .FirstOrDefaultAsync(c => c.Name.ToLower() == dto.CategoryName.ToLower());
+                if (category == null)
+                {
+                    return BadRequest(new { message = $"Category '{dto.CategoryName}' not found" });
+                }
+
+                expense.Title = dto.Title;
+                expense.Amount = dto.Amount;
+                expense.Description = dto.Description;
+                expense.CategoryId = category.Id;
+
+                await _context.SaveChangesAsync();
+
+                return Ok(expense);
             }
             catch (Exception ex)
             {

@@ -12,12 +12,12 @@ namespace ExpenseManager.Models
         [Required]
         [Column("name")]
         [StringLength(50)]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         [Column("description")]
         [StringLength(200)]
         public string? Description { get; set; }
 
-        public List<Expense> Expenses { get; set; } = new List<Expense>();
+        public ICollection<Expense> Expenses { get; set; } = new List<Expense>();
     }
 }
