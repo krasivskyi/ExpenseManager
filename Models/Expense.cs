@@ -12,14 +12,14 @@ namespace ExpenseManager.Models
         [Required]
         [Column("title")]
         [StringLength(100)]
-        public string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
 
         [Required]
         [Column("amount")]
         public decimal Amount { get; set; }
 
         [Column("date")]
-        public DateTime Date { get; set; } = DateTime.Now;
+        public DateTime Date { get; set; } = DateTime.UtcNow;
 
         [Column("description")]
         [StringLength(500)]
@@ -29,6 +29,6 @@ namespace ExpenseManager.Models
         [Column("category_id")]
         public int CategoryId { get; set; }
 
-        public Category Category { get; set; }
+        public Category? Category { get; set; }
     }
 }
