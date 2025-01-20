@@ -50,6 +50,17 @@ namespace ExpenseManager.Controllers
                 if (filter.MaxAmount.HasValue)
                     query = query.Where(e => e.Amount <= filter.MaxAmount.Value);
 
+                query = filter.SortBy switch
+                {
+                    SortOrder.DateAsc => query.OrderBy(e => e.Date),
+                    SortOrder.DateDesc => query.OrderByDescending(e => e.Date),
+                    SortOrder.AmountAsc => query.OrderBy(e => e.Amount),
+                    SortOrder.AmountDesc => query.OrderByDescending(e => e.Amount),
+                    SortOrder.TitleAsc => query.OrderBy(e => e.Title),
+                    SortOrder.TitleDesc => query.OrderByDescending(e => e.Title),
+                    _ => query.OrderByDescending(e => e.Date)  // По умолчанию - новые первыми
+                };
+
                 var expenses = await query.ToListAsync();
                 return Ok(expenses);
             }

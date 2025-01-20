@@ -13,5 +13,7 @@ namespace ExpenseManager.DTOs
 
         public decimal? MinAmount { get; set; }
         public decimal? MaxAmount { get; set; }
+
+        public SortOrder? SortBy { get; set; }
     }
 } 
