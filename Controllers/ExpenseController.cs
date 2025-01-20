@@ -36,8 +36,13 @@ namespace ExpenseManager.Controllers
                     query = query.Where(e => e.CategoryId == filter.CategoryId.Value);
 
                 if (!string.IsNullOrWhiteSpace(filter.SearchTerm))
-                    query = query.Where(e => e.Title.Contains(filter.SearchTerm) 
-                        || (e.Description != null && e.Description.Contains(filter.SearchTerm)));
+                {
+                    var searchTerm = filter.SearchTerm.ToLower();
+                    query = query.Where(e => 
+                        e.Title.ToLower().Contains(searchTerm) || 
+                        (e.Description != null && e.Description.ToLower().Contains(searchTerm))
+                    );
+                }
 
                 if (filter.MinAmount.HasValue)
                     query = query.Where(e => e.Amount >= filter.MinAmount.Value);
