@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using ExpenseManager.Data;
 using ExpenseManager.Models;
 using System.Text.Json.Serialization;
+using Microsoft.OpenApi.Models;
+using ExpenseManager.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,19 +24,21 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
-// Добавляем поддержку Razor Pages
 builder.Services.AddRazorPages();
 
-// Добавляем поддержку контроллеров API
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
     });
 
-// Добавьте эти строки после builder.Services.AddControllers():
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "ExpenseManager", Version = "v1" });
+    
+    c.SchemaFilter<EnumSchemaFilter>();
+});
 
 var app = builder.Build();
 
@@ -58,7 +62,6 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-// Заменить UseEndpoints на прямой вызов MapControllers
 app.MapControllers();
 app.MapRazorPages();
 
